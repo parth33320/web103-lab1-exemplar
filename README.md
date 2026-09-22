@@ -1,33 +1,52 @@
-# Lab 1: Unearthed Part 1 Exemplar
+# UnEarthed Part 2 - Database Integration & Architecture Tracing
 
 ## Overview
 
-UnEarthed is a crowdsourced repo of great gift ideas for different kinds of people. In the first part of this lab, students build a site only using HTML, CSS, and JavaScript without a frontend framework. Using Express, students define request handlers and routes to the home, details, and 404 pages. The gift data displayed on the site will be fetched from a provided JSON file.
-
-## Project Screenshot
-
-![screenshot of completed project](readme_screenshot.gif)
-
-## Setup
-
-### Dependencies
-
-* [Express](https://expressjs.com/)
-* [Nodemon](https://www.npmjs.com/package/nodemon)
+UnEarthed Part 2 transitions the Express application from static arrays to a cloud PostgreSQL database hosted on Render. The application features connection pooling, automated database table creation and seeding, an MVC controller structure, Pico CSS frontend styling, and full end-to-end call stack architectural tracing.
 
 ---
 
-### Run UnEarthed Part 1
+## Architecture & Call Stack Tracing
 
-To run the UnEarthed Part 1 exemplar:
-
-1. Open a terminal and navigate into the `client` directory.
-2. Run the command `npm install` to install the required dependencies for the `client`.
-3. Run the command `npm run dev` to run the frontend.
-4. Open a **new** terminal and navigate into the `server` directory.
-5. Run the command `npm install` to install the required dependencies for the `server`.
-6. Run the command `npm run start` to run the backend.
+Full call stack traces and architectural domain boundaries are documented in **[ARCHITECTURE.md](./ARCHITECTURE.md)**.
 
 ---
 
-*Last Updated: June 2023*
+## Key Features
+
+- **Cloud PostgreSQL Integration**: Configured with `pg.Pool` connection pooling in `server/config/database.js` using SSL configurations (`rejectUnauthorized: false`).
+- **Secure Environment Management**: Managed via `.env` loaded with `dotenv` and ignored in `.gitignore`.
+- **Automated Reset & Seeding**: Running `npm run reset` or `npm start` drops the `gifts` table, provisions the schema with strict data constraints (`id SERIAL PRIMARY KEY`, `name`, `"pricePoint"`, `audience`, `image`, `description`, `"submittedBy"`, `"submittedOn"`), and automatically seeds default items.
+- **MVC Architecture**: `server/controllers/gifts.js` contains an asynchronous `getGifts` handler querying `SELECT * FROM gifts ORDER BY id ASC`, returning HTTP `200 OK` JSON rows or HTTP `409 Conflict` error statuses.
+- **Pico CSS Integration**: Styled with [Pico CSS](https://picocss.com/) for clean, semantic, and responsive frontend design.
+
+---
+
+## Setup & Running
+
+### 1. Backend Setup
+
+```bash
+cd server
+npm install
+npm run reset   # Reset and seed PostgreSQL database
+npm start       # Auto-resets DB and starts Express server via Nodemon
+```
+
+### 2. Frontend Setup
+
+```bash
+cd client
+npm install
+npm run dev     # Run Vite dev server
+```
+
+---
+
+## Demo / Walkthrough
+
+![App Demo](demo.gif)
+
+---
+
+*Last Updated: February 2025*
